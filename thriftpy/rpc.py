@@ -11,7 +11,6 @@ from thriftpy.thrift import TProcessor, TClient
 from thriftpy.transport import (
     TBufferedTransportFactory,
     TServerSocket,
-    TSSLServerSocket,
     TSocket,
 )
 
@@ -23,8 +22,6 @@ def make_client(service, host="localhost", port=9090, unix_socket=None,
                 cafile=None, ssl_context=None, certfile=None, keyfile=None):
     if unix_socket:
         socket = TSocket(unix_socket=unix_socket)
-        if certfile:
-            warnings.warn("SSL only works with host:port, not unix_socket.")
     elif host and port:
         socket = TSocket(host, port, socket_timeout=timeout)
     else:
@@ -45,16 +42,9 @@ def make_server(service, handler,
 
     if unix_socket:
         server_socket = TServerSocket(unix_socket=unix_socket)
-        if certfile:
-            warnings.warn("SSL only works with host:port, not unix_socket.")
     elif host and port:
-        if certfile:
-            server_socket = TSSLServerSocket(
-                host=host, port=port, client_timeout=client_timeout,
-                certfile=certfile)
-        else:
-            server_socket = TServerSocket(
-                host=host, port=port, client_timeout=client_timeout)
+        server_socket = TServerSocket(
+            host=host, port=port, client_timeout=client_timeout)
     else:
         raise ValueError("Either host/port or unix_socket must be provided.")
 
@@ -79,8 +69,6 @@ def client_context(service, host="localhost", port=9090, unix_socket=None,
         socket = TSocket(unix_socket=unix_socket,
                          connect_timeout=connect_timeout,
                          socket_timeout=socket_timeout)
-        if certfile:
-            warnings.warn("SSL only works with host:port, not unix_socket.")
     elif host and port:
         socket = TSocket(host, port,
                          connect_timeout=connect_timeout,
