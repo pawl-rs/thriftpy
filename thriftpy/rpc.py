@@ -13,7 +13,6 @@ from thriftpy.transport import (
     TServerSocket,
     TSSLServerSocket,
     TSocket,
-    TSSLSocket,
 )
 
 
@@ -27,13 +26,7 @@ def make_client(service, host="localhost", port=9090, unix_socket=None,
         if certfile:
             warnings.warn("SSL only works with host:port, not unix_socket.")
     elif host and port:
-        if cafile or ssl_context:
-            socket = TSSLSocket(host, port, socket_timeout=timeout,
-                                cafile=cafile,
-                                certfile=certfile, keyfile=keyfile,
-                                ssl_context=ssl_context)
-        else:
-            socket = TSocket(host, port, socket_timeout=timeout)
+        socket = TSocket(host, port, socket_timeout=timeout)
     else:
         raise ValueError("Either host/port or unix_socket must be provided.")
 
@@ -89,17 +82,9 @@ def client_context(service, host="localhost", port=9090, unix_socket=None,
         if certfile:
             warnings.warn("SSL only works with host:port, not unix_socket.")
     elif host and port:
-        if cafile or ssl_context:
-            socket = TSSLSocket(host, port,
-                                connect_timeout=connect_timeout,
-                                socket_timeout=socket_timeout,
-                                cafile=cafile,
-                                certfile=certfile, keyfile=keyfile,
-                                ssl_context=ssl_context)
-        else:
-            socket = TSocket(host, port,
-                             connect_timeout=connect_timeout,
-                             socket_timeout=socket_timeout)
+        socket = TSocket(host, port,
+                         connect_timeout=connect_timeout,
+                         socket_timeout=socket_timeout)
     else:
         raise ValueError("Either host/port or unix_socket must be provided.")
 
