@@ -16,7 +16,7 @@ PY3 = sys.version_info[0] == 3
 PYPY = "__pypy__" in sys.modules
 
 UNIX = platform.system() in ("Linux", "Darwin")
-CYTHON = UNIX and not PYPY  # Cython always disabled in pypy and windows
+CYTHON = False  # always disable
 
 # only python2.7.9 and python 3.4 or above have true ssl context
 MODERN_SSL = (2, 7, 9) <= sys.version_info < (3, 0, 0) or \
